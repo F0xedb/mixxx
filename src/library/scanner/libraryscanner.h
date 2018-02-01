@@ -1,0 +1,132 @@
+#ifndef MIXXX_LIBRARYSCANNER_H
+#define MIXXX_LIBRARYSCANNER_H
+
+#include <QThread>
+#include <QThreadPool>
+#include <QString>
+#include <QStringList>
+#include <QSemaphore>
+#include <QScopedPointer>
+
+#include "library/dao/cuedao.h"
+#include "library/dao/libraryhashdao.h"
+#include "library/dao/directorydao.h"
+#include "library/dao/playlistdao.h"
+#include "library/dao/trackdao.h"
+#include "library/dao/analysisdao.h"
+#include "library/scanner/scannerglobal.h"
+#include "track/track.h"
+#include "util/db/dbconnectionpool.h"
+
+#include <gtest/gtest.h>
+
+class ScannerTask;
+class LibraryScannerDlg;
+class TrackCollection;
+
+class LibraryScanner : public QThread {
+    FRIEND_TEST(LibraryScannerTest, ScannerRoundtrip);
+    Q_OBJECT
+  public:
+    LibraryScanner(
+            mixxx::DbConnectionPoolPtr pDbConnectionPool,
+            TrackCollection* pTrackCollection,
+            const UserSettingsPointer& pConfig);
+    ~LibraryScanner() override;
+
+  public slots:
+    // Call from any thread to start a scan. Does nothing if a scan is already
+    // in progress.
+    void scan();
+
+    // Call from any thread to cancel the scan.
+    void slotCancel();
+
+  signals:
+    void scanStarted();
+    void scanFinished();
+    void progressHashing(QString);
+    void progressLoading(QString path);
+    void progressCoverArt(QString file);
+    void trackAdded(TrackPointer pTrack);
+    void tracksMoved(QSet<TrackId> oldTrackIds, QSet<TrackId> newTrackIds);
+    void tracksChanged(QSet<TrackId> changedTrackIds);
+
+    // Emitted by scan() to invoke slotStartScan in the scanner thread's event
+    // loop.
+    void startScan();
+
+  protected:
+    void run();
+
+  public slots:
+    void queueTask(ScannerTask* pTask);
+
+  private slots:
+    void slotStartScan();
+    void slotFinishHashedScan();
+    void slotFinishUnhashedScan();
+
+    // ScannerTask signal handlers.
+    void slotDirectoryHashedAndScanned(const QString& directoryPath,
+                                   bool newDirectory, int hash);
+    void slotDirectoryUnchanged(const QString& directoryPath);
+    void slotTrackExists(const QString& trackPath);
+    void slotAddNewTrack(const QString& trackPath);
+
+  private:
+    enum ScannerState {
+        IDLE,
+        STARTING,
+        SCANNING,
+        CANCELING,
+        FINISHED
+    };
+
+    void cancelAndQuit();
+    void cancel();
+
+    // Allowed State transitions:
+    // IDLE -> STARTING
+    // STARTING -> IDLE
+    // STARTING -> SCANNING
+    // SCANNING -> FINISHED
+    // FINISHED -> IDLE
+    // every state can change to CANCELING
+    // CANCELING -> IDLE
+    bool changeScannerState(LibraryScanner::ScannerState newState);
+
+    void cleanUpScan();
+
+    mixxx::DbConnectionPoolPtr m_pDbConnectionPool;
+
+    // The library trackcollection. Do not touch this from the library scanner
+    // thread.
+    TrackCollection* m_pTrackCollection;
+
+    // The pool of threads used for worker tasks.
+    QThreadPool m_pool;
+
+    // The library scanner thread's DAOs.
+    LibraryHashDAO m_libraryHashDao;
+    CueDAO m_cueDao;
+    PlaylistDAO m_playlistDao;
+    DirectoryDAO m_directoryDao;
+    AnalysisDao m_analysisDao;
+    TrackDAO m_trackDao;
+
+    // Global scanner state for scan currently in progress.
+    ScannerGlobalPointer m_scannerGlobal;
+
+    // The Semaphore guards the state transitions queued to the
+    // Qt even Queue in the way, that you cannot start a
+    // new scan while the old one is canceled
+    QSemaphore m_stateSema;
+    // this is accessed main and LibraryScanner thread
+    volatile ScannerState m_state;
+
+    QStringList m_libraryRootDirs;
+    QScopedPointer<LibraryScannerDlg> m_pProgressDlg;
+};
+
+#endif // MIXXX_LIBRARYSCANNER_H

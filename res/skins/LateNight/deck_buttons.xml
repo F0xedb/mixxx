@@ -1,0 +1,94 @@
+<Template>
+	<WidgetGroup>
+		<ObjectName>DeckButtons</ObjectName>
+		<SizePolicy>me,me</SizePolicy>
+		<BackPath>background_tile.png</BackPath>
+		<Layout>horizontal</Layout>
+		<MinimumSize>200,-1</MinimumSize>
+		<Children>
+			<WidgetGroup>
+				<ObjectName>FFRew</ObjectName>
+				<Layout>horizontal</Layout>
+				<Children>
+					<PushButton>
+						<TooltipId>back_start</TooltipId>
+						<NumberStates>1</NumberStates>
+						<State>
+							<Number>0</Number>
+							<Pressed>btn_rewind2_overdown.png</Pressed>
+							<Unpressed>btn_rewind2.png</Unpressed>
+						</State>
+						<Connection>
+							<ConfigKey>[Channel<Variable name="channum"/>],back</ConfigKey>
+							<ButtonState>LeftButton</ButtonState>
+						</Connection>
+						<Connection>
+							<ConfigKey>[Channel<Variable name="channum"/>],start</ConfigKey>
+							<ButtonState>RightButton</ButtonState>
+						</Connection>
+					</PushButton>
+
+					<PushButton>
+						<TooltipId>fwd_end</TooltipId>
+						<NumberStates>1</NumberStates>
+						<State>
+							<Number>0</Number>
+							<Pressed>btn_forward2_overdown.png</Pressed>
+							<Unpressed>btn_forward2.png</Unpressed>
+						</State>
+						<Connection>
+							<ConfigKey>[Channel<Variable name="channum"/>],fwd</ConfigKey>
+							<ButtonState>LeftButton</ButtonState>
+						</Connection>
+						<Connection>
+							<ConfigKey>[Channel<Variable name="channum"/>],end</ConfigKey>
+							<ButtonState>RightButton</ButtonState>
+						</Connection>
+					</PushButton>
+
+					<PushButton>
+						<TooltipId>reverse</TooltipId>
+						<NumberStates>1</NumberStates>
+						<RightClickIsPushButton>true</RightClickIsPushButton>
+						<State>
+							<Number>0</Number>
+							<Pressed>btn_reverse2_overdown.png</Pressed>
+							<Unpressed>btn_reverse2.png</Unpressed>
+						</State>
+						<Connection>
+							<ConfigKey>[Channel<Variable name="channum"/>],reverse</ConfigKey>
+							<ButtonState>LeftButton</ButtonState>
+						</Connection>
+						<Connection>
+							<ConfigKey>[Channel<Variable name="channum"/>],reverseroll</ConfigKey>
+							<ButtonState>RightButton</ButtonState>
+						</Connection>
+					</PushButton>
+
+					<PushButton>
+						<TooltipId>play_cue_set</TooltipId>
+						<NumberStates>2</NumberStates>
+						<RightClickIsPushButton>true</RightClickIsPushButton>
+						<State>
+							<Number>0</Number>
+							<Pressed>btn_play1_down.png</Pressed>
+							<Unpressed>btn_play1.png</Unpressed>
+						</State>
+						<State>
+							<Number>1</Number>
+							<Pressed>btn_play1_overdown.png</Pressed>
+							<Unpressed>btn_play1_over.png</Unpressed>
+						</State>
+						<Connection>
+							<ConfigKey>[Channel<Variable name="channum"/>],play</ConfigKey>
+							<ButtonState>LeftButton</ButtonState>
+						</Connection>
+						<Connection>
+							<ConfigKey>[Channel<Variable name="channum"/>],play_indicator</ConfigKey>
+						</Connection>
+					</PushButton>
+				</Children>
+			</WidgetGroup>
+		</Children>
+	</WidgetGroup>
+</Template>

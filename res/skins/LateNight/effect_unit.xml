@@ -1,0 +1,25 @@
+<!DOCTYPE template>
+<!--
+  Description:
+    An effect unit widget.
+  Variables:
+    group: The group for the controls.
+-->
+<Template>
+  <SetVariable name="group">[EffectRack<Variable name="EffectRack"/>_EffectUnit<Variable name="EffectUnit"/>]</SetVariable>
+  <WidgetGroup>
+    <ObjectName>EffectUnit<Variable name="EffectUnit"/></ObjectName>
+    <Layout>vertical</Layout>
+    <SizePolicy>me,f</SizePolicy>
+    <MinimumSize>300,85</MinimumSize>
+    <MaximumSize>350,85</MaximumSize>
+    <Children>
+      <WidgetGroup>
+        <ObjectName>EffectUnitControlRow</ObjectName>
+        <Layout>horizontal</Layout>
+        <SizePolicy>me,min</SizePolicy>
+        <BackPath>background_tile.png</BackPath>
+      </WidgetGroup>
+    </Children>
+  </WidgetGroup>
+</Template>

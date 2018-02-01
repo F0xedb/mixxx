@@ -1,0 +1,39 @@
+<Template>
+	<WidgetGroup>
+		<ObjectName>DeckRowOne</ObjectName>
+		<Layout>horizontal</Layout>
+		<SizePolicy>me,min</SizePolicy>
+		<MinimumSize>180,-1</MinimumSize>
+		<Children>
+		        <Template src="skin:vinyl_controls.xml"/>
+            <WidgetGroup>  <!-- spacer -->
+                <Layout>horizontal</Layout>
+                <SizePolicy>me,min</SizePolicy>
+                <Children></Children>
+            </WidgetGroup>
+            <WidgetGroup>
+                <Layout>vertical</Layout>
+                <SizePolicy>min,min</SizePolicy>
+                <ObjectName>EffectKnob</ObjectName>
+                <Children>
+                     <WidgetGroup>
+                         <ObjectName>AlignCenterTop</ObjectName>
+                         <Layout>horizontal</Layout>
+                         <SizePolicy>min,min</SizePolicy>
+                         <Children>
+                             <Template src="skin:knob_textless.xml">
+                                <SetVariable name="group">[QuickEffectRack1_[Channel<Variable name="channum"/>]]</SetVariable>
+                                <SetVariable name="control">super1</SetVariable>
+                             </Template>
+                         </Children>
+                     </WidgetGroup>
+                     <EffectName>
+                         <ObjectName>KnobLabel</ObjectName>
+                         <EffectRackGroup>[QuickEffectRack1]</EffectRackGroup>
+                         <EffectUnitGroup>[QuickEffectRack1_[Channel<Variable name="channum"/>]]</EffectUnitGroup>
+                         <Effect>1</Effect>
+                     </EffectName>
+                 </Children>
+		</Children>
+	</WidgetGroup>
+</Template>
